@@ -4,29 +4,54 @@
 
 
 sr = 44100
-ksmps = 128
+ksmps = 256
 nchnls = 1
 0dbfs = 1.0
 
+;midi channel 1,       value:50, init value:.5       value:49, init value:.5
+ctrlinit  1, 50, .5, 49, .5, 51, .5, 52, .5 
 
 instr 1
+
+;channel 50 range 0-1
+kcpsPWM ctrl7 1,50,0,1 
+
+;channel 49 range 0-1
+kcpsAMP ctrl7 1,49,0,1 
+
+;channel 51 range 0-1
+kcpsOtherParam1 ctrl7 1,51,0,1 
+
+;channel 52 range 0-1
+kcpsOtherParam2  ctrl7 1,52,0,1 
+
+;midi notes not in use yet
 icsp cpsmidi
 
-iamp   ampmidi .5
-
+;envelope
 kenv	 madsr	0.5, 0, 1, 0.5
 
-aosc    oscil kenv*.05, icsp, 1
+;frequency from score
+kfreq = cpspch(p4)
 
-out  aosc
+;oscillator
+aSignal     vco2 kenv*kcpsAMP, kfreq , 2, kcpsPWM
+          	out       aSignal
+
+out aSignal
 endin
 
 </CsInstruments>
 <CsScore>
-f1 0 512 -7 30000 256 30000 0 -30000  256 -30000 
-f2 0 4096 10 1
 
-f0 999
+r 10
+
+t 0 120
+
+i 1 0 1 6.06
+i 1 + 1 6.09
+i 1 + 1 7.00
+s
 </CsScore>
 </CsoundSynthesizer>
 <bsbPanel>
