@@ -35,10 +35,14 @@ kenv	 madsr	0.5, 0, 1, 0.5
 kfreq = cpspch(p4)
 
 ;oscillator
-aSignal     vco2 kenv*kcpsAMP, kfreq , 2, kcpsPWM
-          	out       aSignal
-
-out aSignal
+a1     vco2 kenv*kcpsAMP, kfreq , 2, kcpsPWM
+kfrq    port 10, 0.008, 200
+a1      butterlp a1, kfrq
+a2      linseg 0, 0.003, 1, 0.01, 0.001, 0.005, 0, 1, 0
+a1      =  a1 * a2
+        denorm a1
+aL, aR  freeverb a1, a1, 0.1, 0.1, sr, 0
+        outs a1 + aL, a1 + aR
 endin
 
 </CsInstruments>
@@ -48,8 +52,8 @@ r 10
 
 t 0 120
 
-i 1 0 1 6.06
-i 1 + 1 6.09
+i 1 0 1 6.00
+i 1 + 1 6.07
 i 1 + 1 7.00
 s
 </CsScore>
